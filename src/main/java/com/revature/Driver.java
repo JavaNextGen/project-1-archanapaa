@@ -2,8 +2,12 @@ package com.revature;
 
 import java.sql.Connection;
 
+import com.revature.controllers.LoginController;
+import com.revature.controllers.ReimbursementController;
 import com.revature.models.Menu;
 import com.revature.util.ConnectionFactory;
+
+import io.javalin.Javalin;
 
 public class Driver {
 
@@ -20,13 +24,26 @@ public class Driver {
 		
 		
 		//Instantiate a menu object
-		Menu menu = new Menu();
+		//Menu menu = new Menu();
 		
 		//Use the Menu Class's displayMenu() method to give the user the menu
-		menu.displayMenu();
+		//menu.displayMenu();
 		
 		
-		//this is our entire main method (until we learn Javalin in week 4)
+		//start Javalin server on port 7000
+		
+        Javalin app = Javalin.create().start(7000);
+        app.get("/", ctx -> {
+        	
+        ctx.result("Javalin successfully set");
+        ctx.status(200);
+        });
+        
+        LoginController loginController = new LoginController();
+        app.post("/login", loginController.loginHandler);
+        
+        ReimbursementController reimbController = new ReimbursementController();
+        app.post("/reimbursesubmit",reimbController.submissionHandler );
 		
 		//all of the complicated menu logic is hidden in the Menu class... this is power of abstraction!!!!!
 	}

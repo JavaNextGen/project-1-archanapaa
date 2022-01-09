@@ -1,8 +1,10 @@
 package com.revature.services;
 
 import com.revature.models.Reimbursement;
+import com.revature.models.ReimbursementRequest;
 import com.revature.models.Status;
 import com.revature.models.User;
+import com.revature.repositories.ReimbursementDAO;
 
 import java.util.Collections;
 import java.util.List;
@@ -49,5 +51,12 @@ public class ReimbursementService {
      */
     public List<Reimbursement> getReimbursementsByStatus(Status status) {
         return Collections.emptyList();
+    }
+    
+    
+    public int submitReimbursement(ReimbursementRequest reimbursementRequest) {
+    	ReimbursementDAO reimbursementDAO = new ReimbursementDAO();
+    	int reimbursementId = reimbursementDAO.submit(reimbursementRequest);
+    	return reimbursementId;
     }
 }
