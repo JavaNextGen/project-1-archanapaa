@@ -44,6 +44,9 @@ public class Driver {
         
         ReimbursementController reimbController = new ReimbursementController();
         app.post("/reimbursesubmit",reimbController.submissionHandler );
+        
+      
+        app.get("/search/author/{id}",reimbController.searchHandler );
 		
 		//all of the complicated menu logic is hidden in the Menu class... this is power of abstraction!!!!!
 	}

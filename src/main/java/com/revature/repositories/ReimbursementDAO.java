@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -82,6 +83,58 @@ public class ReimbursementDAO {
     	
     	return reimbursementId;
     }
+    
+    
+    public List<Reimbursement> search(int authorId) {
+    	List reimbursements = new ArrayList();
+    	
+    	try(Connection conn = ConnectionFactory.getInstance().getConnection()){
+			
+    		ResultSet rs = null;
+    		
+			String sql = "SELECT er.reimb_id , er.reimb_amount , er.reimb_description , er.reimb_author , er.reimb_resolver ,eu.ers_user_id , eu.user_first_name , eu.user_last_name , ers.reimb_status_id , ers.reimb_status \r\n"
+					+ "FROM ers.ers_reimbursement er, ers.ers_users eu , ers.ers_reimbursement_status ers \r\n"
+					+ "WHERE reimb_author = ? \r\n"
+					+ "AND er.reimb_author = eu.ers_user_id AND er.reimb_status_id = ers.reimb_status_id ";
+			
+			PreparedStatement ps = conn.prepareStatement(sql); //we use PreparedStatements for SQL commands with variables
+			
+			//use the PreparedStatement objects' methods to insert values into the query's ?s
+			//the values will come from the Employee object we send in.
+			ps.setInt(1,authorId);
+			
+			
+			rs = ps.executeQuery();
+			System.out.println(rs);
+			
+			while(rs.next()) {
+				Reimbursement reimbursement = new Reimbursement(); 
+				//System.out.println(rs);
+				reimbursement.setId(rs.getInt("reimb_id"));
+				reimbursement.setAmount(rs.getDouble("reimb_amount"));
+				
+				if (rs.getString("reimb_status").equalsIgnoreCase("Pending")) {
+					reimbursement.setStatus(Status.PENDING);
+				}else if(rs.getString("reimb_status").equalsIgnoreCase("Approved")) {
+					reimbursement.setStatus(Status.APPROVED);
+				}else if(rs.getString("reimb_status").equalsIgnoreCase("Denied")) {
+					reimbursement.setStatus(Status.DENIED);
+				}
+				
+				
+				reimbursements.add(reimbursement);
+			}
+			
+		} catch(SQLException e) {
+			System.out.println("search failed! ");
+			e.printStackTrace();
+		}
+    	
+    	//System.out.println(reimbursements);
+    	return reimbursements;
+    }
+    
+    
     
     private static java.sql.Timestamp getCurrentTimeStamp() {
     	java.util.Date today = new java.util.Date();

@@ -59,4 +59,10 @@ public class ReimbursementService {
     	int reimbursementId = reimbursementDAO.submit(reimbursementRequest);
     	return reimbursementId;
     }
+    
+    public List<Reimbursement> searchReimbursement(int authorId ) {
+    	ReimbursementDAO reimbursementDAO = new ReimbursementDAO();
+    	List<Reimbursement> reimbursements = reimbursementDAO.search(authorId);
+    	return reimbursements;
+    }
 }

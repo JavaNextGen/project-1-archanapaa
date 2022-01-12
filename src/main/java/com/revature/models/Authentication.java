@@ -1,4 +1,4 @@
-package com.revature.models;
+ package com.revature.models;
 
 public class Authentication {
 	private String username;
